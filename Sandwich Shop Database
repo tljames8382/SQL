@@ -1,0 +1,25 @@
+--create a sandwich shop database 
+
+CREATE TABLE sandwiches (id INTEGER PRIMARY KEY, sandwich_name TEXT, price INTEGER, quantity_sold INTEGER,  rating INTEGER);
+INSERT INTO sandwiches VALUES (1, "Meatball", 5, 100, 5); 
+INSERT INTO sandwiches VALUES (2, "Turkey", 6, 125, 8); 
+INSERT INTO sandwiches VALUES (3, "House Special", 8, 200, 1); 
+INSERT INTO sandwiches VALUES (4, "Ham and Cheese", 5, 75, 15); 
+INSERT INTO sandwiches VALUES (5, "Salami and Pepperoni", 9, 66, 14);
+INSERT INTO sandwiches VALUES (6, "Tuna", 5, 150, 4);
+INSERT INTO sandwiches VALUES (7, "Chicken", 8, 125, 9); 
+INSERT INTO sandwiches VALUES (8, "Italian Beef", 10, 180, 2);
+INSERT INTO sandwiches VALUES (9, "Bologna", 5, 75, 13); 
+INSERT INTO sandwiches VALUES (10, "Ham and Turkey", 7, 140, 3);
+INSERT INTO sandwiches VALUES (11, "Pulled Pork", 5, 130, 6);
+INSERT INTO sandwiches VALUES (12, "Egg Salad", 5, 100, 7);
+INSERT INTO sandwiches VALUES (13, "Chicken Salad", 7, 95, 10); 
+INSERT INTO sandwiches VALUES (14, "Steak", 10, 80, 11); 
+INSERT INTO sandwiches VALUES (15, "Grilled Cheese", 4, 76, 12); 
+
+--display sandwiches in order by price
+SELECT * FROM sandwiches
+ORDER BY price desc;
+
+--display total quantity of sandwiches sold 
+SELECT SUM(quantity_sold) FROM sandwiches; 
