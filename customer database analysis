@@ -56,3 +56,96 @@ SELECT Product, SUM(quantity)
 FROM BIT_DB.FebSales
 WHERE location like '%Los Angeles%'
 GROUP BY Product
+
+SELECT SUM(Quantity) AS total_quantity_sold
+  FROM JanSales;-- total sales revenue
+
+SELECT SUM(Quantity * price) AS total_revenue
+  FROM JanSales;-- average price per product
+
+SELECT Product,
+       AVG(price) AS avg_price
+  FROM JanSales
+ GROUP BY Product;-- most sold products by quantity
+
+SELECT Product,
+       SUM(Quantity) AS total_quantity
+  FROM JanSales
+ GROUP BY Product
+ ORDER BY total_quantity DESC;-- locations with the highest sales
+
+SELECT location,
+       SUM(Quantity * price) AS total_sales
+  FROM JanSales
+ GROUP BY location
+ ORDER BY total_sales DESC;-- highest revenue generationg products
+
+SELECT Product,
+       ROUND(SUM(Quantity * price), 2) AS total_revenue
+  FROM JanSales
+ GROUP BY Product
+ ORDER BY total_revenue DESC;-- top 3 products by revenue in each location
+
+SELECT location,
+       Product,
+       total_revenue
+  FROM (
+           SELECT location,
+                  Product,
+                  ROUND(SUM(Quantity * price), 2) AS total_revenue,
+                  RANK() OVER (PARTITION BY location ORDER BY SUM(Quantity * price) DESC) AS revenue_rank
+             FROM JanSales
+            GROUP BY location,
+                     Product
+       )
+ WHERE revenue_rank <= 3
+ ORDER BY location,
+          revenue_rank;-- day with the highest revenue and what products sold the most that day
+
+WITH daily_revenue AS (
+    SELECT orderdate,
+           SUM(Quantity * price) AS total
+      FROM JanSales
+     GROUP BY orderdate
+),
+top_day AS (
+    SELECT orderdate
+      FROM daily_revenue
+     ORDER BY total DESC
+     LIMIT 1
+)
+SELECT j.orderdate,
+       j.Product,
+       SUM(j.Quantity) AS total_sold
+  FROM JanSales j
+       JOIN
+       top_day td ON j.orderdate = td.orderdate
+ GROUP BY j.orderdate,
+          j.Product
+ ORDER BY total_sold DESC;
+ 
+--  Locations in New York with at least 3 orders in January
+SELECT location, COUNT(DISTINCT orderID) AS total_orders
+FROM JanSales
+WHERE location LIKE '%New York%'
+GROUP BY location
+HAVING total_orders >= 3;
+
+-- number of each type of headphone sold in February
+SELECT Product, SUM(Quantity) AS total_sold
+FROM FebSales
+WHERE Product LIKE '%headphone%'
+GROUP BY Product;
+
+-- Average amount spent per account in February
+SELECT ROUND(SUM(Quantity * price) * 1.0 / COUNT(DISTINCT orderID), 2) AS avg_spent_per_account
+FROM FebSales;
+
+--  Product with the most revenue in January and its total revenue
+SELECT Product, ROUND(SUM(Quantity * price), 2) AS total_revenue
+FROM JanSales
+GROUP BY Product
+ORDER BY total_revenue DESC
+LIMIT 1;
+
+
