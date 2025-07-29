@@ -1,0 +1,49 @@
+Climate Conference Project
+Database: https://www.db-fiddle.com/f/pxMci1sLL945KHKYvpe9W6/1
+-- Lef Join- List VIP names and assigned events:
+
+SELECT 
+    v.first_name,
+    v.last_name,
+    e.event_name
+FROM vips v
+LEFT JOIN events e ON v.event = e.event_id;
+
+
+-- inner join, show VIPs who made reservations. 
+SELECT 
+    v.first_name,
+    v.last_name,
+    v.association,
+    r.hotel
+FROM vips v
+INNER JOIN reservations r ON v.member_id = r.member_id;
+
+--multiple joins VIPs names, event name and their hotel
+SELECT 
+    v.first_name,
+    v.last_name,
+    e.event_name,
+    h.hotel_name
+FROM vips v
+JOIN events e ON v.event = e.event_id
+JOIN reservations r ON v.member_id = r.member_id
+JOIN hotels h ON r.hotel = h.hotel_id;
+
+-- subquery, VIPs representing workshops
+SELECT 
+    first_name,
+    last_name
+FROM vips
+WHERE event IN (
+    SELECT event_id
+    FROM events
+    WHERE event_type = 'Workshop');
+
+--List the hotel name and how many VIPs are staying at each one.
+SELECT 
+    h.hotel_name,
+    COUNT(r.member_id) AS vip_count
+FROM hotels h
+LEFT JOIN reservations r ON h.hotel_id = r.hotel
+GROUP BY h.hotel_name;
